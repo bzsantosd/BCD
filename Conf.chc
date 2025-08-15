@@ -9,9 +9,9 @@
       <ExibirLog Valor="False"/>
     </Configuracoes>
     <Arquivos>
-      <Arq01 Valor="C:\USERS\2DEVT-A\DOWNLOADS\EXEMPLO MODELAGEM CONCEITUAL.BRM"/>
-      <Arq02 Valor=""/>
-      <Arq03 Valor=""/>
+      <Arq01 Valor="C:\USERS\2DEVT-A\DESKTOP\BCD - BRUNO\BCD\MODELO LOGICO - EMPRESA DE LIMPEZA.BRM"/>
+      <Arq02 Valor="C:\USERS\2DEVT-A\DESKTOP\BCD - BRUNO\BCD\MODELO CONCEITUAL - EMPRESA DE LIMPEZA.BRM"/>
+      <Arq03 Valor="C:\USERS\2DEVT-A\DOWNLOADS\EXEMPLO MODELAGEM CONCEITUAL.BRM"/>
       <Arq04 Valor=""/>
       <Arq05 Valor=""/>
     </Arquivos>
