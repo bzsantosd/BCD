@@ -83,5 +83,9 @@ modify column nome_funcionario varchar (200);
 alter table fornecedor
 modify column estado char(2) default 'MG';
 
+-- alterar chave primaria
+alter table empregado modify cpf_funcionario int not null;
+alter table empregado drop primary key;
+
 alter table empregado
-add primary key (cpf_funcionario);
+add primary key (cod_funcionario, cpf_funcionario);
