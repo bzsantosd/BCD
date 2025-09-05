@@ -11,3 +11,7 @@ conn = mysql.connector.connect(
     password="senaisp",
     database="avaliacao"
 )
+cursor = conn.cursor()
+
+# run a query 
+cursor.execute("SELECT * FROM users")
