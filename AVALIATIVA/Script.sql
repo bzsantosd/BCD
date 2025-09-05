@@ -1,99 +1,101 @@
-CREATE DATABASE GerenciamentoProjetos;
-USE GerenciamentoProjetos;
--- select database (); 
+CREATE DATABASE avalicao;
+use avalicao;
 
-CREATE TABLE Fornecedor (
-    Fcodigo INT PRIMARY KEY,
-    Fnome VARCHAR(255) NOT NULL,
-    Status VARCHAR(50) not null default 'ativo',
-    Cidade VARCHAR(100),
-    primary key (Fcodigo)
+create table fornecedores (
+fcodigo int auto_increment not null primary key,
+fnome varchar(100),
+fstatus varchar(20) default("ativo"),
+cidade varchar(100) not null
 );
-
-CREATE TABLE Peca (
-    Pcodigo INT PRIMARY KEY,
-    Pnome VARCHAR(255) NOT NULL,
-    Cor VARCHAR(50),
-    Peso INT,
-    Cidade VARCHAR(100),
-    primary key (Pcodigo)
+create table instituicoes (
+icodigo int auto_increment not null primary key,
+nome varchar(100)
 );
-
-CREATE TABLE Instituicao (
-    Icodigo INT PRIMARY KEY,
-    Nome VARCHAR(255) NOT NULL,
-    primary key (Icodigo)
+create table projetos (
+prcod int auto_increment not null primary key,
+prnome varchar(100),
+cidade varchar(100) not null,
+icodigo int not null,
+foreign key (icodigo) references instituicoes (icodigo)
 );
-
-CREATE TABLE Projeto (
-    PRcod INT PRIMARY KEY,
-    PRnome VARCHAR(255) NOT NULL,
-    Cidade VARCHAR(100),
-    Icod INT,
-    FOREIGN KEY (Icod) REFERENCES Instituicao(Icodigo)
+create table pecas (
+pcodigo int auto_increment not null primary key,
+pnome varchar(100) not null,
+cidade varchar(100) not null,
+cor varchar(40) not null
 );
-
-CREATE TABLE Fornecimento (
-    Fcod INT,
-    Pcod INT,
-    PRcod INT,
-    Quantidade INT,
-    PRIMARY KEY (Fcod, Pcod, PRcod),
-    FOREIGN KEY (Fcod) REFERENCES Fornecedor(Fcodigo),
-    FOREIGN KEY (Pcod) REFERENCES Peca(Pcodigo),
-    FOREIGN KEY (PRcod) REFERENCES Projeto(PRcod)
+create table fornecimento (
+quantidade int not null primary key,
+fcodigo int not null,
+pcodigo int not null,
+prcod int not null,
+foreign key (fcodigo) references fornecedores (fcodigo),
+foreign key (pcodigo) references pecas (pcodigo),
+foreign key (prcod) references projetos (prcod)
 );
+-- INDEXES
 
-SHOW TABLES; 
+CREATE INDEX idx_pecas on pecas(pcodigo);
+SHOW INDEX FROM pecas;
 
-show index from tbl_projeto;
+-- SELECT DATABASE(); deixa o banco direcionado ao dev
+-- Deve ser selecionado o nome das chaves estrangeiras definidas dentro da tabela
+SELECT constraint_name
+FROM information_schema.key_column_usage
+WHERE table_name = 'projetos';
 
-create index idx_icodigo on tbl_projeto(icodigo);
+-- Depois adicionar o nome dessa constraint_name para dropa-lá
+alter table projetos drop foreign key projetos_ibfk_1;
+drop table instituicoes;
 
-SHOW TABLES; 
-select Fnome from tbl_fornecedor;
-select * from tbl_peca;
+-- Criando a tabela cidade
+create table cidades (
+Ccod int auto_increment not null primary key,
+cnome varchar(100) not null,
+cuf char(2) not null
+);
+SELECT * FROM cidades;
+-- Arrumando a tabela fornecedores
+alter table fornecedores add fone varchar(14) not null;
+alter table fornecedores modify cidade int not null;
+-- Outra forma de adicionar Chaves estrangeiras para aplicações com dados ja existentes
+-- ALTER TABLE fornecedores add constraint fk_ccod_fornecedor foreign key (Ccod) references cidades (Ccod);
+alter table fornecedores add foreign key (cidade) references cidades (Ccod);
+select * from fornecedores;
 
-ALTER TABLE Fornecedor
-ALTER COLUMN Status SET DEFAULT 'Ativo';
+-- Arrumando a tabela peças
+alter table pecas add peso decimal(6,2);
+alter table pecas modify cidade int not null;
+alter table pecas add foreign key (cidade) references cidades (Ccod);
+select * from pecas;
 
--- alter table tbl_fornecedor
--- add column ccod int not null;
+-- Arrumando a tabela projetos
+alter table projetos drop column icodigo;
+alter table projetos modify cidade int not null;
+alter table projetos add foreign key (cidade) references cidades (Ccod);
+select * from projetos;
 
--- alter table tbl_fornecedor
--- add constraint fk_ccod_fornecedor
--- foreign key (ccod) references tbl_cidade (ccod);
 
-ALTER TABLE Fornecedor
-ADD Fone VARCHAR(20),
-DROP COLUMN Cidade,
-ADD Ccod INT,
-ADD FOREIGN KEY (Ccod) REFERENCES Cidade(Ccod);
+-- Inserindo dados
+INSERT INTO cidades (cnome,cuf) VALUES ('Cosmópolis','SP');
+INSERT INTO cidades (cnome,cuf) VALUES ('Limeira','SP');
+INSERT INTO cidades (cnome,cuf) VALUES ('Arthur Nogueira','SP');
+INSERT INTO cidades (cnome,cuf) VALUES ('Xique-Xique','BA');
+INSERT INTO cidades (cnome,cuf) VALUES ('Gramado','RS');
+-- Inserindo dados na tabela pecas
+INSERT INTO pecas (pnome,cidade,cor,peso) VALUES ('Motor V6',3,'Vermelho',400.55);
+INSERT INTO pecas (pnome,cidade,cor,peso) VALUES ('Engrenagens',1,'Prateado',250.70);
+-- Inserindo dados na tabela fornecedores
+INSERT INTO fornecedores (fnome,fstatus,cidade,fone) VALUES ("Victor Hugo Camargo","Ativo",1,"(19)98444-xxxx");
+INSERT INTO fornecedores (fnome,fstatus,cidade,fone) VALUES ("Henrique Rodrigues Motta","Ativo",3,"(19)99991-xxxx");
 
-ALTER TABLE Cidade
-ADD COLUMN UF VARCHAR(2);
+-- Inserindo dados na tabela projetos
+INSERT INTO projetos (prnome,cidade) VALUES ("Área Verde",5);
+INSERT INTO projetos (prnome,cidade) VALUES ("Aguaplanagem",3);
 
-ALTER TABLE Peca
-DROP COLUMN Cidade,
-ADD Ccod INT,
-ADD FOREIGN KEY (Ccod) REFERENCES Cidade(Ccod);
+-- Inserindo dados na tabela fornecimento
+INSERT INTO fornecimento (quantidade,fcodigo,pcodigo,prcod) VALUES (21,2,1,2);
+INSERT INTO fornecimento (quantidade,fcodigo,pcodigo,prcod) VALUES (10,1,1,1);
 
-ALTER TABLE Projeto
-DROP COLUMN Icod,
-ADD Ccod INT,
-ADD FOREIGN KEY (Ccod) REFERENCES Cidade(Ccod);
-
-drop table tbl_instituicao;
-
-ALTER TABLE Fornecimento
-ADD COLUMN Quantidade INT;
-
-insert into tbl_cidade values (11, 'Limeira', 'SP');
-insert into tbl_cidade values (10, 'São Paulo', 'SP');
-insert into tbl_cidade values (19, 'Campinas', 'SP');
-insert into tbl_cidade values (15, 'Cordeiropolis', 'SP');
-
--- verificar ultimo valor inserido de id
- select last_insert_id();
- 
- 
+-- Verifica qual foi o ultimo ID adicionado
+select LAST_INSERT_ID();
