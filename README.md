@@ -1,2 +1,2 @@
 # BancodeDados
-Conteúdo sobre aulas de Banco de Dados
+Conteúdo sobre as aulas de Banco de Dados
