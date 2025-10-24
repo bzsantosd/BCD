@@ -14,12 +14,11 @@ genero varchar(100),
 preco decimal (5,2),
 qtde_livro int not null,
 data_venda datetime,
-
 qtde_venda int,
 valor_total decimal (5,2),
 cod_venda int auto_increment,
 PRIMARY KEY(cod_livro,cod_venda)
-)
+);
 
 CREATE TABLE AUTORES_EDITORAS (
 cod_autor int auto_increment ,
@@ -33,7 +32,7 @@ contato varchar (100),
 telefone varchar (20),
 cidade varchar (100),
 PRIMARY KEY(cod_autor,cod_cnpj)
-)
+);
 
 CREATE TABLE CLIENTES (
 nome_cliente int auto_increment PRIMARY KEY,
@@ -41,21 +40,21 @@ cpf varchar (14),
 email varchar (255),
 telefone varchar (20),
 data_nasc datetime
-)
+);
 
 CREATE TABLE TEM (
 cod_autor int auto_increment ,
 cod_livro int auto_increment ,
 FOREIGN KEY(cod_autor) REFERENCES AUTORES_EDITORAS (cod_autor,cod_cnpj),
 FOREIGN KEY(cod_livro) REFERENCES LIVROS_VENDAS (cod_livro,cod_venda)
-)
+);
 
 CREATE TABLE GERAM (
 cod_venda int auto_increment,
 nome_cliente int auto_increment,
 FOREIGN KEY(cod_venda) REFERENCES LIVROS_VENDAS (cod_livro,cod_venda),
 FOREIGN KEY(nome_cliente) REFERENCES CLIENTES (nome_cliente)
-)
+);
 
 CREATE TABLE LIVROS_VENDAS (
 cod_livro int auto_increment,
@@ -71,7 +70,7 @@ qtde_venda int,
 valor_total decimal (5,2),
 cod_venda int auto_increment,
 PRIMARY KEY(cod_livro,cod_venda)
-)
+);
 
 CREATE TABLE AUTORES_EDITORAS (
 cod_autor int auto_increment ,
@@ -85,7 +84,7 @@ contato varchar (100),
 telefone varchar (20),
 cidade varchar (100),
 PRIMARY KEY(cod_autor,cod_cnpj)
-)
+);
 
 CREATE TABLE CLIENTES (
 nome_cliente int auto_increment PRIMARY KEY,
@@ -93,21 +92,48 @@ cpf varchar (14),
 email varchar (255),
 telefone varchar (20),
 data_nasc datetime
-)
+);
 
 CREATE TABLE TEM (
 cod_autor int auto_increment ,
 cod_livro int auto_increment ,
 FOREIGN KEY(cod_autor) REFERENCES AUTORES_EDITORAS (cod_autor,cod_cnpj),
 FOREIGN KEY(cod_livro) REFERENCES LIVROS_VENDAS (cod_livro,cod_venda)
-)
+);
 
 CREATE TABLE GERAM (
 cod_venda int auto_increment,
 nome_cliente int auto_increment,
 FOREIGN KEY(cod_venda) REFERENCES LIVROS_VENDAS (cod_livro,cod_venda),
 FOREIGN KEY(nome_cliente) REFERENCES CLIENTES (nome_cliente)
-)
+);
+
+CREATE TABLE Livros (
+id_livro int primary key auto_increment,
+titulo varchar(100),
+id_autor int,
+ano_publicacao date,
+preco decimal(7,2)
+);
+
+CREATE TABLE Vendas (
+id_vendas int primary key auto_increment,
+data_venda datetime,
+qtde_venda int,
+valor_total decimal (5,2)
+);
+
+START TRANSACTION;
+UPDATE Livros
+SET quantidade = quantidade - 2
+WHERE id_livro = 3;
+
+INSERT INTO Vendas (id_livro, data_venda, quantidade)
+VALUES (3, NOW(), 2);
+
+COMMIT;
+
+ROLLBACK;
 
 INSERT INTO Clientes (nome_cliente, cpf, data_nasc, email, telefone)
 VALUES ('Ana Silva', '123.456.789-01', '1990-05-15', 'ana.silva@email.com', '(11) 98765-4321');
@@ -119,6 +145,7 @@ INSERT INTO Livros_Vendas (editora, titulo_livro, preco, genero, autor, qtde_liv
 VALUES ('Editora Saber', 'O Mistério da Montanha', 35.50, 'Ficção', 'João Oliveira', 500, 17750.00, '2025-09-19 10:30:00', 50);
 
 select * from livros;
+select * from vendas;
 
 select titulo_livro, ano_publicação
 from livros;
@@ -134,7 +161,6 @@ from livros
 order by ano_publicacao desc;
 
 -- limitar consultas por valor de quantidade 
--- apresentadas
 select titulo from livros 
 limit 5;
 
@@ -151,7 +177,7 @@ select *from autores;
 select livros.titulo, autores.nome from livros
 join autores on livros.id_autor = autores.id_autor;
 
--- consulta por agruoamentos group by
+-- consulta por agruoamentos 
 select titulo, count(*) as quantidade
 from livros
 group by titulo;
