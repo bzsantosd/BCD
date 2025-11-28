@@ -1,21 +1,18 @@
 <?php
-$servidor = "localhost";
-$usuario = "root"; // Mude para o seu usuário
-$senha = "senaisp";     // Mude para a sua senha
-$banco = "Oficina"; // Mude para o nome do seu DB
+// Configurações do Banco de Dados
+$host = "localhost";
+$usuario = "root";   
+$senha = "senaisp";         
+$banco = "Oficina"; // Nome do banco criado no setup_db.sql
 
-// 1. Cria a conexão usando a classe mysqli
-$conn = new mysqli($servidor, $usuario, $senha, $banco);
+// Cria a conexão
+$conexao = new mysqli($host, $usuario, $senha, $banco);
 
-// 2. Verifica se ocorreu algum erro na conexão
-if ($conn->connect_error) {
-    // Se houver erro, encerra o script e exibe a mensagem de erro
-    die("Falha na conexão: " . $conn->connect_error);
+// Verifica a conexão
+if ($conexao->connect_error) {
+    die("Falha na conexão com o Banco de Dados: " . $conexao->connect_error);
 }
 
-// 3. Define o charset para evitar problemas com acentuação
-$conn->set_charset("utf8");
-
-// Se chegou até aqui, a conexão foi bem-sucedida
-// O objeto $conn é a sua conexão ativa
+// Define o charset para UTF-8 (acentuação)
+$conexao->set_charset("utf8");
 ?>

@@ -1,41 +1,113 @@
-<?php
-// 1. Inclui o arquivo que estabelece a conexão
-include 'conexao.php'; // Certifique-se de que este arquivo contém o objeto $conn
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Sistema de Gerenciamento da Oficina</title>
+  <style>
+    /* --- Estilos de Estrutura --- */
+    body { 
+      font-family: Arial, sans-serif; 
+      margin: 40px; 
+      background-color: #f4f4f9; 
+    }
+    .container { 
+      max-width: 800px; 
+      margin: auto; 
+      background: white; 
+      padding: 30px; 
+      border-radius: 8px; 
+      box-shadow: 0 0 10px rgba(0,0,0,0.1); 
+    }
+    h1 { 
+      text-align: center; 
+      color: #333; 
+    }
+    
+    /* --- Estilos do Grid (MANTIDOS PARA OS 3 PRIMEIROS) --- */
+    .menu-grid { 
+      display: grid; 
+      grid-template-columns: repeat(3, 1fr); /* 3 colunas iguais */
+      gap: 20px; 
+      margin-top: 30px; 
+    }
 
-// 2. Dados a serem inseridos (Simulação de dados de um formulário POST)
-$nome = "João da Silva";
-$cpf = "123.456.789-00";
-$contato = "99887766"; // Assumindo apenas 8 dígitos
-$endereco = "Rua das Flores, 100";
+    /* --- NOVO: Estilos para a Última Linha Centralizada --- */
+    .last-row-centered {
+      display: flex;
+      justify-content: center; /* Centraliza horizontalmente */
+      gap: 20px;
+      margin-top: 20px; /* Adiciona espaço acima da nova linha */
+    }
 
-// 3. O SQL para INSERT com '?' como placeholders para os valores
-$sql_insert = "INSERT INTO CLIENTE (nome_cliente, cpf_cliente, contato_cliente, endereco_cliente) VALUES (?, ?, ?, ?)";
+    /* Ajuste para o tamanho dos itens na última linha */
+    .last-row-centered .menu-item {
+      flex-basis: 230px; /* Define uma largura base para os itens */
+      flex-grow: 0; /* Impede que eles cresçam para preencher todo o espaço */
+    }
 
-// 4. Prepara a consulta
-$stmt = $conn->prepare($sql_insert);
+    /* --- Estilos Base do Item de Menu --- */
+    .menu-item {
+      text-decoration: none;
+      color: white;
+      padding: 25px;
+      border-radius: 6px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+      background-color: #555; 
+    }
+    
+    /* --- Cores de Fundo por Seção --- */
+    .item-cliente { background-color: #388E3C; }
+    .item-estoque { background-color: #388E3C; }
+    .item-mecanico { background-color: #388E3C; }
+    .item-servico { background-color: #388E3C; }
+    .item-veiculo { 
+      background-color: #388E3C; 
+      color: #ffffff; 
+    }
 
-if ($stmt === false) {
-    die('Erro na preparação do SQL: ' . $conn->error);
-}
+    /* --- Efeito Hover --- */
+    .menu-item:hover { 
+      opacity: 0.85; 
+    }
+    .item-cliente:hover { background-color: #388E3C; }
+    .item-estoque:hover { background-color: #388E3C; }
+    .item-mecanico:hover { background-color: #388E3C; }
+    .item-servico:hover { background-color: #388E3C; }
+    .item-veiculo:hover { background-color: #388E3C; }
+    
+    /* Media Query para Telas Menores (garantir responsividade) */
+    @media (max-width: 700px) {
+      .menu-grid {
+        grid-template-columns: 1fr; /* Coluna única em telas pequenas */
+      }
+      .last-row-centered {
+        flex-direction: column; /* Itens empilhados em telas pequenas */
+      }
+      .last-row-centered .menu-item {
+        flex-basis: auto;
+      }
+    }
+  </style>
+</head>
+<body>
 
-// 5. Liga os parâmetros (Bind Parameters)
-/*
- * O primeiro argumento ("ssss") define o tipo de dados:
- * "s" = string para cada um dos 4 campos (nome, cpf, contato, endereco)
-*/
-$stmt->bind_param("ssss", $nome, $cpf, $contato, $endereco);
+  <div class="container">
+    <h1>Gerenciamento da Oficina Mecânica</h1>
+    
+    <div class="menu-grid">
+      <a href="cliente.php" class="menu-item item-cliente">Cliente</a>
+      <a href="estoque.php" class="menu-item item-estoque">Estoque</a>
+      <a href="mecanicos.php" class="menu-item item-mecanico">Mecânicos</a>
+    </div>
 
-// 6. Executa a consulta
-if ($stmt->execute()) {
-    echo "✅ Cliente inserido com sucesso!";
-    // Opcional: Mostra o ID gerado automaticamente
-    $novo_id = $conn->insert_id;
-    echo " O ID do novo cliente é: " . $novo_id;
-} else {
-    echo " Erro ao inserir cliente: " . $stmt->error;
-}
+    <div class="last-row-centered">
+      <a href="servico.php" class="menu-item item-servico">Serviço</a>
+      <a href="veiculo.php" class="menu-item item-veiculo">Veículo</a>
+    </div>
+  </div>
 
-// 7. Fecha o statement e a conexão
-$stmt->close();
-$conn->close();
-?>
+</body>
+</html>
